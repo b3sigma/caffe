@@ -20,7 +20,7 @@ foreach(source ${srcs})
   caffe_set_solution_folder(${name} tools)
 
   # restore output name without suffix
-  if(name MATCHES "caffe.bin")
+  if(name MATCHES "caffe.bin" AND NOT MSVC)
     set_target_properties(${name} PROPERTIES OUTPUT_NAME caffe)
   endif()
 

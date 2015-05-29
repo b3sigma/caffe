@@ -4,7 +4,9 @@
 if(BUILD_SHARED_LIBS)
   set(Caffe_LINK caffe)
 else()
-  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  if(MSVC)
+    set(Caffe_LINK caffe) # a post build event will take care of this
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(Caffe_LINK -Wl,-force_load caffe)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(Caffe_LINK -Wl,--whole-archive caffe -Wl,--no-whole-archive)
@@ -75,7 +77,7 @@ function(caffe_pickup_caffe_sources root)
   list(REMOVE_ITEM  srcs ${test_srcs})
 
   # adding headers to make the visible in some IDEs (Qt, VS, Xcode)
-  list(APPEND srcs ${hdrs} ${PROJECT_BINARY_DIR}/caffe_config.h)
+  list(APPEND srcs ${hdrs} ${PROJECT_BINARY_DIR}/caffe_config.h ${PROJECT_BINARY_DIR}/caffe_force_tempate_instantiation.h)
   list(APPEND test_srcs ${test_hdrs})
 
   # collect cuda files

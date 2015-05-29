@@ -7,6 +7,10 @@
 
 #include "boost/algorithm/string.hpp"
 #include "caffe/caffe.hpp"
+#include "caffe_force_tempate_instantiation.h"
+
+//template class caffe::DeconvolutionLayer < float > ;
+//template class caffe::DeconvolutionLayer < double >;
 
 using caffe::Blob;
 using caffe::Caffe;
@@ -15,7 +19,6 @@ using caffe::Layer;
 using caffe::shared_ptr;
 using caffe::Timer;
 using caffe::vector;
-
 
 DEFINE_int32(gpu, -1,
     "Run in GPU mode on given device ID.");

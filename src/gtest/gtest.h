@@ -663,11 +663,13 @@
 namespace std {
 namespace tr1 {
 
-template <typename T0 = void, typename T1 = void, typename T2 = void,
-    typename T3 = void, typename T4 = void, typename T5 = void,
-    typename T6 = void, typename T7 = void, typename T8 = void,
-    typename T9 = void>
-class tuple;
+//#ifndef _MSC_VER
+    template <typename T0 = void, typename T1 = void, typename T2 = void,
+        typename T3 = void, typename T4 = void, typename T5 = void,
+        typename T6 = void, typename T7 = void, typename T8 = void,
+        typename T9 = void >
+    class tuple;
+//#endif // !_MSC_VER
 
 // Anything in namespace gtest_internal is Google Test's INTERNAL
 // IMPLEMENTATION DETAIL and MUST NOT BE USED DIRECTLY in user code.
