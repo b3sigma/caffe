@@ -1,12 +1,14 @@
 ################################################################################################
 # Defines global Caffe_LINK flag, This flag is required to prevent linker from excluding
 # some objects which are not addressed directly but are registered via static constructors
+unset(Caffe_OBJS)
 if(BUILD_SHARED_LIBS)
   set(Caffe_LINK caffe)
-else()
-  if(MSVC)
-    set(Caffe_LINK caffe) # a post build event will take care of this
-  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+elseif(BUILD_caffe_object_library)
+    set(Caffe_OBJS $<TARGET_OBJECTS:caffe>)
+    set(Caffe_LINK proto) 
+else()    
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(Caffe_LINK -Wl,-force_load caffe)
   elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(Caffe_LINK -Wl,--whole-archive caffe -Wl,--no-whole-archive)

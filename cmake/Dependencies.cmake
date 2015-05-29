@@ -2,7 +2,7 @@
 set(Caffe_LINKER_LIBS "")
 
 # ---[ Boost
-set(Boost_COMPONENTS system thread)
+set(Boost_COMPONENTS system thread date_time)
 if(MSVC)
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_MULTITHREAD ON)
@@ -146,6 +146,9 @@ if(BUILD_python)
     set(HAVE_PYTHON TRUE)
     if(BUILD_python_layer)
       add_definitions(-DWITH_PYTHON_LAYER)
+      if(MSVC)
+        add_definitions(-DBOOST_PYTHON_STATIC_LIB)
+      endif()
       include_directories(SYSTEM ${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
       list(APPEND Caffe_LINKER_LIBS ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
     endif()

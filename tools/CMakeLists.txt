@@ -11,7 +11,7 @@ foreach(source ${srcs})
   endif()
 
   # target
-  add_executable(${name} ${source})
+  add_executable(${name} ${source} ${Caffe_OBJS})
   target_link_libraries(${name} ${Caffe_LINK})
   caffe_default_properties(${name})
 

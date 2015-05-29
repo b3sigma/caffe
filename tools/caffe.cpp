@@ -7,7 +7,7 @@
 
 #include "boost/algorithm/string.hpp"
 #include "caffe/caffe.hpp"
-#include "caffe_force_tempate_instantiation.h"
+//#include "caffe_force_tempate_instantiation.h"
 
 //template class caffe::DeconvolutionLayer < float > ;
 //template class caffe::DeconvolutionLayer < double >;

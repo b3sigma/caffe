@@ -26,7 +26,7 @@ else()
 endif()
 
 # ---[ Adding test target
-add_executable(${the_target} EXCLUDE_FROM_ALL ${test_srcs})
+add_executable(${the_target} EXCLUDE_FROM_ALL ${test_srcs} ${Caffe_OBJS})
 target_link_libraries(${the_target} gtest ${Caffe_LINK})
 caffe_default_properties(${the_target})
 caffe_set_runtime_directory(${the_target} "${PROJECT_BINARY_DIR}/test")

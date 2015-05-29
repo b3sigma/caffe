@@ -6,11 +6,7 @@ endif()
 include_directories(${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR} ${Boost_INCLUDE_DIRS})
 file(GLOB_RECURSE python_srcs ${PROJECT_SOURCE_DIR}/python/*.cpp)
 
-if(MSVC)
-    add_definitions(-DBOOST_PYTHON_STATIC_LIB)
-endif()
-
-add_library(pycaffe MODULE ${python_srcs})
+add_library(pycaffe MODULE ${python_srcs} ${Caffe_OBJS})
 target_link_libraries(pycaffe ${Caffe_LINK} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
 set_target_properties(pycaffe PROPERTIES PREFIX "" OUTPUT_NAME "_caffe")
 if(MSVC)
@@ -26,6 +22,14 @@ if(UNIX OR APPLE)
                        COMMAND touch ${PROJECT_SOURCE_DIR}/python/caffe/proto/__init__.py
                        COMMAND cp ${proto_gen_folder}/*.py ${PROJECT_SOURCE_DIR}/python/caffe/proto/
                        COMMENT "Creating symlink ${__linkname} -> ${PROJECT_BINARY_DIR}/lib/_caffe${CAffe_POSTFIX}.so")
+elseif(WIN32 AND NOT ${CMAKE_SYSTEM_VERSION} LESS 6.1)
+    message("${proto_gen_folder}")
+    add_custom_command(TARGET pycaffe POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:pycaffe> ${PROJECT_SOURCE_DIR}/python/caffe
+                       COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_SOURCE_DIR}/python/caffe/proto
+                       COMMAND ${CMAKE_COMMAND} -E touch ${PROJECT_SOURCE_DIR}/python/caffe/proto/__init__.py
+                       COMMAND powershell.exe -ExecutionPolicy Bypass -Command "copy \"${proto_gen_folder}/*.py\" \"${PROJECT_SOURCE_DIR}/python/caffe/proto/\""
+                       COMMENT "Creating symlink ${__linkname} -> ${PROJECT_BINARY_DIR}/lib/_caffe.pyd")
 endif()
 
 # ---[ Install
