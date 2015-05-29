@@ -12,7 +12,16 @@ foreach(source ${srcs})
 
   # target
   add_executable(${name} ${source} ${Caffe_OBJS})
-  target_link_libraries(${name} ${Caffe_LINK})
+  if(MSVC AND NOT BUILD_SHARED_LIBS)
+    # make sure we add a reference to caffe so we can 
+    # force the linker to link the .obj instead of the lib
+    add_dependencies(${name} caffe)     
+    # link proto as usual and force linking to transitively inherited
+    # libs from caffe
+    target_link_libraries(${name} ${Caffe_LINK} ${Caffe_LINKER_LIBS}) 
+  else()
+    target_link_libraries(${name} ${Caffe_LINK}) 
+  endif()
   caffe_default_properties(${name})
 
   # set back RUNTIME_OUTPUT_DIRECTORY

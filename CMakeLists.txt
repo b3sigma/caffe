@@ -23,7 +23,7 @@ caffe_option(BUILD_docs   "Build documentation" ON IF UNIX OR APPLE)
 caffe_option(BUILD_python_layer "Build the caffe python layer" ON)
 caffe_option(BUILD_caffe_object_library "Build caffe as an object library" OFF)
 if(MSVC)
-    set(BUILD_caffe_object_library ON CACHE BOOL "Build caffe as an object library" FORCE)
+    set(BUILD_caffe_object_library OFF CACHE BOOL "Build caffe as an object library" FORCE)
 endif()
 
 # ---[ Dependencies
@@ -31,9 +31,9 @@ include(cmake/Dependencies.cmake)
 
 if(BUILD_caffe_object_library)
     list(APPEND Caffe_LINK ${Caffe_LINKER_LIBS})
-    if(HAVE_CUDA)
-        list(APPEND Caffe_LINK caffecuda ${Caffe_LINKER_LIBS})
-    endif()
+    #if(HAVE_CUDA)
+    #    list(APPEND Caffe_LINK caffecuda ${Caffe_LINKER_LIBS})
+    #endif()
 endif()
 
 # ---[ Flags
