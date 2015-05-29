@@ -1,0 +1,14 @@
+#ifndef CAFFE_FORCE_TEMPLATE_INSTANTIATION_H_
+#define CAFFE_FORCE_TEMPLATE_INSTANTIATION_H_
+
+#ifdef _MSC_VER
+namespace caffe {
+#define FORCE_TEMPLATE_INSTANTIATION(classname) \
+  template class classname<float>; \
+  template class classname<double>
+  
+@CAFFE_FORCE_TEMPLATE_INSTANTIATION_HEADER_CONTENT@  
+}
+#endif
+
+#endif // CAFFE_FORCE_TEMPLATE_INSTANTIATION_H_
