@@ -9,7 +9,8 @@ elseif(BUILD_caffe_object_library)
     set(Caffe_LINK proto) 
 else()
   if(MSVC)
-      set(Caffe_LINK proto) # just link proto since we will patch the vcxproj to make the equivalent of --whole-archive
+      set(Caffe_LINK caffe)
+      # Not sure if these flags are needed anymore
       set(CMAKE_EXE_LINKER_FLAGS_RELEASE    "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /OPT:NOREF")
       set(CMAKE_EXE_LINKER_FLAGS_DEBUG      "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /OPT:NOREF")
       set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /OPT:NOREF")

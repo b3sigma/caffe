@@ -23,25 +23,36 @@ if(HAVE_CUDA)
   #endif()
 endif()
 
-#if(MSVC)
-#    message(STATUS "Generating header to force template instantiation")
-#    execute_process(COMMAND powershell.exe -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/scripts/caffe_gen_template_class_list.ps1
-#                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#                    RESULT_VARIABLE CAFFE_CLASS_LIST_RES
-#                    OUTPUT_VARIABLE CAFFE_CLASS_LIST
-#                    ERROR_VARIABLE CAFFE_CLASS_LIST_ERR
-#                    )
-#    if(${CAFFE_CLASS_LIST_RES} EQUAL 0)            
-#        foreach(_class ${CAFFE_CLASS_LIST})
-#            string(REPLACE "\n" "" _class ${_class})
-#            set(CAFFE_FORCE_TEMPLATE_INSTANTIATION_HEADER_CONTENT "${CAFFE_FORCE_TEMPLATE_INSTANTIATION_HEADER_CONTENT}FORCE_TEMPLATE_INSTANTIATION(${_class});\n")
-#        endforeach()
-#        configure_file(${PROJECT_SOURCE_DIR}/cmake/Templates/caffe_force_tempate_instantiation.h.in "${PROJECT_BINARY_DIR}/caffe_force_tempate_instantiation.h" @ONLY)
-#    else()
-#        message( FATAL_ERROR "Failed to create statically registered template class list. Error: ${CAFFE_CLASS_LIST_ERR}")
-#    endif()
-#
-#endif()
+if(MSVC)
+    set(CAFFE_SYMBOL_REFERENCE_HEADER "${CMAKE_BINARY_DIR}/caffe_reference_symbols.h")
+    message(STATUS "Generating header to force symbol references")
+    if(HAVE_CUDNN)
+        set(_have_cudnn 1)
+    else()
+        set(_have_cudnn 0)
+    endif()
+    
+    if(HAVE_CUDA)
+        set(_have_cuda 1)
+    else()
+        set(_have_cuda 0)
+    endif()
+        
+    execute_process(COMMAND powershell.exe -ExecutionPolicy Bypass -Command ${CMAKE_SOURCE_DIR}/scripts/caffe_gen_template_class_list.ps1 ${_have_cudnn} ${_have_cuda} | Out-File "${CAFFE_SYMBOL_REFERENCE_HEADER}"
+                    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                    RESULT_VARIABLE CAFFE_CLASS_LIST_RES
+                    OUTPUT_VARIABLE CAFFE_CLASS_LIST
+                    ERROR_VARIABLE CAFFE_CLASS_LIST_ERR
+                    )
+    if(${CAFFE_CLASS_LIST_RES} EQUAL 0)   
+        message("Success")
+        message("${CAFFE_CLASS_LIST}")
+       
+    else()
+        message( FATAL_ERROR "Failed to create statically registered template class list. Error: ${CAFFE_CLASS_LIST_ERR}")
+    endif()
+
+endif()
 
 if(BUILD_caffe_object_library)
     add_library(caffe OBJECT ${srcs})
