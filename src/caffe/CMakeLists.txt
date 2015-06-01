@@ -14,13 +14,7 @@ caffe_pickup_caffe_sources(${PROJECT_SOURCE_DIR})
 
 if(HAVE_CUDA)
   caffe_cuda_compile(cuda_objs ${cuda})
-  #if(NOT MSVC)
-    list(APPEND srcs ${cuda_objs} ${cuda})
-  #else()
-  #  add_library(caffecuda ${cuda_objs} ${cuda})
-  #  caffe_default_properties(caffecuda)
-  #  set_target_properties(caffecuda PROPERTIES LINKER_LANGUAGE CXX)
-  #endif()
+  list(APPEND srcs ${cuda_objs} ${cuda})
 endif()
 
 if(MSVC)
@@ -50,12 +44,8 @@ if(MSVC)
 
 endif()
 
-if(BUILD_caffe_object_library)
-    add_library(caffe OBJECT ${srcs})
-else()
-    add_library(caffe ${srcs})
-    target_link_libraries(caffe proto ${Caffe_LINKER_LIBS})
-endif()
+add_library(caffe ${srcs})
+target_link_libraries(caffe proto ${Caffe_LINKER_LIBS})
 caffe_default_properties(caffe)
 
 # ---[ Tests
@@ -64,13 +54,7 @@ caffe_default_properties(caffe)
 # ---[ Install
 install(DIRECTORY ${Caffe_INCLUDE_DIR}/caffe DESTINATION include)
 install(FILES ${proto_hdrs} DESTINATION include/caffe/proto)
-if(BUILD_caffe_object_library)
-    install(TARGETS proto EXPORT CaffeTargets DESTINATION lib)
-else()
-    install(TARGETS caffe proto EXPORT CaffeTargets DESTINATION lib)
-endif()
-
-
+install(TARGETS caffe proto EXPORT CaffeTargets DESTINATION lib)
 
 file(WRITE ${PROJECT_BINARY_DIR}/__init__.py)
 list(APPEND proto_python ${PROJECT_BINARY_DIR}/__init__.py)

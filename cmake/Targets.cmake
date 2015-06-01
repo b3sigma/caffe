@@ -1,12 +1,8 @@
 ################################################################################################
 # Defines global Caffe_LINK flag, This flag is required to prevent linker from excluding
 # some objects which are not addressed directly but are registered via static constructors
-unset(Caffe_OBJS)
 if(BUILD_SHARED_LIBS)
   set(Caffe_LINK caffe)
-elseif(BUILD_caffe_object_library)
-    set(Caffe_OBJS $<TARGET_OBJECTS:caffe>)
-    set(Caffe_LINK proto) 
 else()
   if(MSVC)
       set(Caffe_LINK caffe)

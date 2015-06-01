@@ -2,13 +2,13 @@
 set(Caffe_LINKER_LIBS "")
 
 # ---[ Boost
-set(Boost_COMPONENTS system thread date_time)
+set(Boost_COMPONENTS system thread)
 if(MSVC)
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_MULTITHREAD ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
     add_definitions(-DBOOST_ALL_NO_LIB)
-    list(APPEND Boost_COMPONENTS filesystem)
+    list(APPEND Boost_COMPONENTS filesystem date_time)
 endif()
 find_package(Boost 1.46 REQUIRED COMPONENTS ${Boost_COMPONENTS})
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
