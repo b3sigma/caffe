@@ -38,18 +38,14 @@ if(MSVC)
         set(_have_cuda 0)
     endif()
         
-    execute_process(COMMAND powershell.exe -ExecutionPolicy Bypass -Command ${CMAKE_SOURCE_DIR}/scripts/caffe_gen_template_class_list.ps1 ${_have_cudnn} ${_have_cuda} | Out-File "${CAFFE_SYMBOL_REFERENCE_HEADER}"
+    execute_process(COMMAND powershell.exe -ExecutionPolicy Bypass -Command ${CMAKE_SOURCE_DIR}/scripts/generate_symbol_reference_header.ps1 ${_have_cudnn} ${_have_cuda} | Out-File "${CAFFE_SYMBOL_REFERENCE_HEADER}"
                     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                    RESULT_VARIABLE CAFFE_CLASS_LIST_RES
-                    OUTPUT_VARIABLE CAFFE_CLASS_LIST
-                    ERROR_VARIABLE CAFFE_CLASS_LIST_ERR
+                    RESULT_VARIABLE CAFFE_SYMBOL_REF_RES
+                    OUTPUT_VARIABLE CAFFE_SYMBOL_REF_OUT
+                    ERROR_VARIABLE CAFFE_SYMBOL_REF_ERR
                     )
-    if(${CAFFE_CLASS_LIST_RES} EQUAL 0)   
-        message("Success")
-        message("${CAFFE_CLASS_LIST}")
-       
-    else()
-        message( FATAL_ERROR "Failed to create statically registered template class list. Error: ${CAFFE_CLASS_LIST_ERR}")
+    if(NOT ${CAFFE_CLASS_LIST_RES} EQUAL 0)                
+        message( FATAL_ERROR "Failed to create statically registered template class list. Error: ${CAFFE_SYMBOL_REF_ERR}")
     endif()
 
 endif()
