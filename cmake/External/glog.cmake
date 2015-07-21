@@ -7,7 +7,7 @@ if (NOT __GLOG_INCLUDED)
   # try the system-wide glog first
   find_package(Glog)
   if (GLOG_FOUND)
-      set(GLOG_EXTERNAL FALSE)
+    set(GLOG_EXTERNAL FALSE)
   elseif(NOT MSVC)
     # fetch and build glog from github
 

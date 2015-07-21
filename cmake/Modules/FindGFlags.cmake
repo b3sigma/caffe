@@ -15,56 +15,75 @@ set(GFLAGS_ROOT_DIR "" CACHE PATH "Folder contains Gflags")
 
 # try config mode first
 set(gflags_DIR ${GFLAGS_ROOT_DIR} CACHE PATH "Folder contains Gflags")
+
+if(MSVC)
+	find_library(GFLAGS_LIBRARY_RELEASE
+		NAMES gflags
+		PATHS ${GFLAGS_ROOT_DIR}
+		PATH_SUFFIXES Release)
+
+	find_library(GFLAGS_LIBRARY_DEBUG
+		NAMES gflagsd
+		PATHS ${GFLAGS_ROOT_DIR}
+		PATH_SUFFIXES Debug)
+
+	set(GFLAGS_LIBRARY optimized ${GFLAGS_LIBRARY_RELEASE} debug ${GFLAGS_LIBRARY_DEBUG})
+else()
+	find_library(GFLAGS_LIBRARY gflags
+		PATHS ${GFLAGS_ROOT_DIR}
+		PATH_SUFFIXES lib lib64)
+endif()
+
+
 find_package(GFlags NO_MODULE)
 set(GFLAGS_FOUND ${GFlags_FOUND})   
 if(GFLAGS_FOUND)
     set(GFLAGS_INCLUDE_DIRS ${gflags_INCLUDE_DIR})
     set(GFLAGS_INCLUDE_DIR ${gflags_INCLUDE_DIR})
-    set(GFLAGS_LIBRARIES ${gflags_LIBRARIES})
-    set(GFLAGS_LIBRARY ${gflags_LIBRARIES})      
+	set(GFLAGS_LIBRARIES "${GFLAGS_LIBRARY};shlwapi.lib")
 else()
-    # We are testing only a couple of files in the include directories
-    if(WIN32)
-        find_path(GFLAGS_INCLUDE_DIR gflags/gflags.h
-            PATHS ${GFLAGS_ROOT_DIR}/src/windows)
-    else()
-        find_path(GFLAGS_INCLUDE_DIR gflags/gflags.h
-            PATHS ${GFLAGS_ROOT_DIR})
-    endif()
+	# We are testing only a couple of files in the include directories
+	if(WIN32)
+		find_path(GFLAGS_INCLUDE_DIR gflags/gflags.h
+			PATHS ${GFLAGS_ROOT_DIR}/src/windows)
+	else()
+		find_path(GFLAGS_INCLUDE_DIR gflags/gflags.h
+			PATHS ${GFLAGS_ROOT_DIR})
+	endif()
 
-    if(MSVC)
-        find_library(GFLAGS_LIBRARY_RELEASE
-            NAMES libgflags
-            PATHS ${GFLAGS_ROOT_DIR}
-            PATH_SUFFIXES Release)
+	if(MSVC)
+		find_library(GFLAGS_LIBRARY_RELEASE
+			NAMES gflags
+			PATHS ${GFLAGS_ROOT_DIR}
+			PATH_SUFFIXES Release)
 
-        find_library(GFLAGS_LIBRARY_DEBUG
-            NAMES libgflags-debug
-            PATHS ${GFLAGS_ROOT_DIR}
-            PATH_SUFFIXES Debug)
+		find_library(GFLAGS_LIBRARY_DEBUG
+			NAMES gflagsd
+			PATHS ${GFLAGS_ROOT_DIR}
+			PATH_SUFFIXES Debug)
 
-        set(GFLAGS_LIBRARY optimized ${GFLAGS_LIBRARY_RELEASE} debug ${GFLAGS_LIBRARY_DEBUG})
-    else()
-        find_library(GFLAGS_LIBRARY gflags)
-    endif()
+		set(GFLAGS_LIBRARY optimized ${GFLAGS_LIBRARY_RELEASE} debug ${GFLAGS_LIBRARY_DEBUG})
+	else()
+		find_library(GFLAGS_LIBRARY gflags)
+	endif()
 
-    find_package_handle_standard_args(GFlags DEFAULT_MSG GFLAGS_INCLUDE_DIR GFLAGS_LIBRARY)
+	find_package_handle_standard_args(GFlags DEFAULT_MSG GFLAGS_INCLUDE_DIR GFLAGS_LIBRARY)
 
 
-    if(GFLAGS_FOUND)
-        set(GFLAGS_INCLUDE_DIRS ${GFLAGS_INCLUDE_DIR})
-        set(GFLAGS_LIBRARIES ${GFLAGS_LIBRARY})
-        message(STATUS "Found gflags  (include: ${GFLAGS_INCLUDE_DIR}, library: ${GFLAGS_LIBRARY})")
-        mark_as_advanced(GFLAGS_LIBRARY_DEBUG GFLAGS_LIBRARY_RELEASE
-                         GFLAGS_LIBRARY GFLAGS_INCLUDE_DIR GFLAGS_ROOT_DIR)
-    else()
-        find_package(GFlags NO_MODULE)
-        set(GFLAGS_FOUND ${GFlags_FOUND})   
-        if(GFLAGS_FOUND)
-            set(GFLAGS_INCLUDE_DIRS ${gflags_INCLUDE_DIR})
-            set(GFLAGS_INCLUDE_DIR ${gflags_INCLUDE_DIR})
-            set(GFLAGS_LIBRARIES ${gflags_LIBRARIES})
-            set(GFLAGS_LIBRARY ${gflags_LIBRARIES})      
-        endif()
-    endif()
+	if(GFLAGS_FOUND)
+		set(GFLAGS_INCLUDE_DIRS ${GFLAGS_INCLUDE_DIR})
+		set(GFLAGS_LIBRARIES ${GFLAGS_LIBRARY})
+		message(STATUS "Found gflags  (include: ${GFLAGS_INCLUDE_DIR}, library: ${GFLAGS_LIBRARY})")
+		mark_as_advanced(GFLAGS_LIBRARY_DEBUG GFLAGS_LIBRARY_RELEASE
+						 GFLAGS_LIBRARY GFLAGS_INCLUDE_DIR GFLAGS_ROOT_DIR)
+	else()
+		find_package(GFlags NO_MODULE)
+		set(GFLAGS_FOUND ${GFlags_FOUND})   
+		if(GFLAGS_FOUND)
+			set(GFLAGS_INCLUDE_DIRS ${gflags_INCLUDE_DIR})
+			set(GFLAGS_INCLUDE_DIR ${gflags_INCLUDE_DIR})
+			set(GFLAGS_LIBRARIES ${gflags_LIBRARIES})
+			set(GFLAGS_LIBRARY ${gflags_LIBRARIES})      
+		endif()
+	endif()
 endif()
